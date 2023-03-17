@@ -1,7 +1,9 @@
 import React, { Component,useRef, useState } from 'react'
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Alert from '../Alert';
+import { UserAuth } from '../contexts/AuthContext';
 
-function SignUp(props){
+function SignUp(){
 
     const [ email, setEmail ] = useState('');
     console.log(email)
@@ -9,36 +11,44 @@ function SignUp(props){
     console.log(password)
     const [ confirmPass, setPass ] = useState('');
     console.log(confirmPass)
-    const { signup, currentUser } = useAuth();
+    const [ name, setName ] = useState('');
+    console.log(name);
+    const { createUser, user, settingUsername } = UserAuth();
     const [ error, setError ] = useState('');
     const [loading, setLoading] = useState(false);
-
-   async function handleSubmit(e){
+    const navigate = useNavigate();
+    
+    
+    async function handleSubmit(e){
         
         e.preventDefault();
+        setError('');
         // Verify if the current password is the same as the confirm password input
         if(password !== confirmPass){
             
             return setError("Passwords do not match")
         }
-        try{
-            setError('');
-            setLoading(true);
-            await  signup(email, password);
-        } catch{
+      
+            // setLoading(true);
+            await createUser(email, password).then((res) => {
 
-            setError('Failed to create an account');
+                console.log(res.user);
+                settingUsername(res.user, name);
+                navigate('/home')
 
-        }
-        
-        setLoading(false);
+            }).catch((e) => {
+
+                setError('This user has been already created!');
+                console.log(e.message);
+
+            })
+
+        // setLoading(false);
     }
 
     return (
       <>
-        <form onSubmit={(e) => handleSubmit(e)} action="POST" className='w-full p-5'>
-            {error ? <div>Password do not match!</div> : null}
-            {currentUser}
+        <form onSubmit={(e) => handleSubmit(e)} action="POST" className='p-5 m-auto md:w-1/2'>
             <div className='flex place-content-center justify-center rounded-lg border border-gray-400 p-5'>
             <div className='w-4/5 flex flex-col h-96 place-content-between'>
                 <div id='header'>
@@ -47,10 +57,16 @@ function SignUp(props){
                         <p className=''>Join us by creating your account</p>
                    
                 </div>
+                {error ? <Alert error={error} /> : null}
                 <div className='flex flex-col w-full'>
 
                     <label htmlFor="email">Enter your email:</label>
                     <input onChange={(e) => setEmail(e.target.value)} className='focus:border-blue-700 focus:shadow-sm focus:shadow-blue-200 outline-none rounded-sm py-1 px-3 border border-blue-400' type="email" id='email' placeholder='Email'/>
+                </div>
+                <div className='flex flex-col w-full'>
+
+                    <label htmlFor="email">Enter your name:</label>
+                    <input onChange={(e) => setName(e.target.value)} className='focus:border-blue-700 focus:shadow-sm focus:shadow-blue-200 outline-none rounded-sm py-1 px-3 border border-blue-400' type="text" id='email' placeholder='Username'/>
                 </div>
                 <div className='flex flex-col w-full'>
 
