@@ -10,6 +10,9 @@ import {
   verifyPasswordResetCode, confirmPasswordReset,
   updateProfile, updateEmail, reauthenticateWithCredential, deleteUser 
 } from 'firebase/auth'
+import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { db, storage } from '../Database';
 
 // Initialise the context
 const UserContext = createContext();
@@ -28,6 +31,23 @@ const AuthProvider = ({children}) => {
   
     // const [ loading, setLoading ] = useState(true);
     const [ user, setUser ] = useState({});
+    const [ chat, setChat ] = useState({
+
+        id: '',
+        date: '',
+        message: '',
+        name: '',
+        uid: '',
+        photo: ''
+
+    });
+    const [ userMessage, setUserMessage ] = useState();
+    const [ images, setListImages ] = useState([]);
+    const imageRef = ref(storage, 'images/');
+
+    console.log(userMessage);
+    console.log(chat)
+    console.log(images)
   
     const createUser = (email,password) => {
 
@@ -61,11 +81,12 @@ const AuthProvider = ({children}) => {
 
     }  
 
-    function settingUsername(user, name){
-
+    function settingUsername(user, name, photo){
+      
       console.log(name)
       return updateProfile(user, {
         displayName: name,
+        photoURL: photo
       });
       
 
@@ -91,6 +112,76 @@ const AuthProvider = ({children}) => {
 
     }
 
+    function setMessage(e, user){
+      
+      setChat({
+        id: Math.random(),
+        date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
+        message: e,
+        name: user.displayName,
+        uid: user.uid,
+        photo: user.photoURL
+      });
+
+    }
+
+    function pushMessages(){
+
+      const collectionRef = collection(db, 'chat');
+      if(chat.message !== ''){
+
+        console.log('Partie')
+        return addDoc(collectionRef, chat);
+
+      }
+
+    }
+
+    async function getMessages(){
+
+     
+      const messages = await getDocs(query(collection(db, 'chat'), orderBy("date", 'asc')));
+      const filtred = messages.docs.map((doc) => {
+ 
+         return doc.data();
+ 
+     });  
+     setUserMessage(filtred);
+     
+    }
+
+    function uploadImages(file){
+
+      console.log(file.name)
+      const storage = getStorage();
+      const storageRef = ref(storage, `images/${file.name}`);
+      return uploadBytes(storageRef, file);
+
+    }
+
+    async function getImages(){
+
+      try{
+
+       const image = await listAll(imageRef);
+       image.items?.map((img) => {
+
+          getDownloadURL(img).then((res) => {
+
+              setListImages((prev) => [...prev, res]);
+
+          });
+
+       });
+
+      }catch(e){
+        console.log(e);
+
+      }
+
+    }
+
+
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
       
@@ -99,8 +190,10 @@ const AuthProvider = ({children}) => {
           console.log(currentUser);
           setUser(currentUser);
         });
+        getMessages();
+        getImages();
         return () => {
-          unsubscribe();
+          unsubscribe();   
         };
       }, []);
 
@@ -114,7 +207,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images }}>
       {children}
     </UserContext.Provider>
   )

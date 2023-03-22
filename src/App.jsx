@@ -10,7 +10,8 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { AuthProvider } from './components/contexts/AuthContext'
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import CompletePasswordReset from './components/completeResetPassword/CompletePasswordReset';
-
+import { db } from './components/Database';
+import { collection, getDocs } from 'firebase/firestore';
 
 
 function App() {

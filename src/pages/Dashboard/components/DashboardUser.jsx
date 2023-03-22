@@ -1,20 +1,44 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { UserAuth } from '../../../components/contexts/AuthContext';
 
 function DashboardUser() {
 
   
-  const { user, settingUsername, changeEmail } = UserAuth();
+  const { user, settingUsername, changeEmail, uploadImages, images } = UserAuth();
   const [ name, setName ] = useState(user.displayName);
   console.log(name);
   const [ email, setEmail ] = useState('');
+  const [ open, setOpen ] = useState(false);
+  const [ image, setImage ] = useState(user.photoURL);
+  
 
+  console.log(image)
+  
+
+  console.log(open)
   console.log(email);
+
+  const handleSaveImages = async (e) => {
+
+    setImage(e);
+    // Upload the image to the database
+    await uploadImages(e).then((res) => {
+
+      console.log('File Uploaded!')
+
+    }).catch((e) => {
+
+      console.log(e.message);
+
+    })
+
+
+  }
 
   const handleSubmit = async (e) => {
 
     e.preventDefault();
-    await settingUsername(user, name).then((e) => {
+    await settingUsername(user, name, image).then((e) => {
 
       console.log(e);
 
@@ -35,7 +59,10 @@ function DashboardUser() {
     })
 
 
+
+
   }
+
   console.log(user.displayName);
 
   return (
@@ -58,9 +85,30 @@ function DashboardUser() {
                     <label htmlFor="email">Email</label>
                     <input onChange={(e) => setEmail(e.target.value)} defaultValue={user.email} type="email" name='email' className='focus:border-blue-700 focus:shadow-sm focus:shadow-blue-200 outline-none rounded-sm py-1 px-3 border border-blue-400'/>
                 </div>
-
             </div>
-            <div >
+            <div className='w-24 h-24 flex flex-col bg-gray-400 place-content-center mb-5 cursor-pointer'>
+                    <span onClick={(e) => setOpen(!open)} className='text-gray-100 font-bold text-center object-cover overflow-hidden'><img className='w-full h-full' src={user.photoURL} alt="" /></span>
+                    <span className='hidden'><img src="" alt="" /></span>
+            </div>
+            <div className={`${open ? "translate-x-0 h-auto transition-all mb-5" : "h-0 -translate-x-[1300px] "} border w-auto border-gray-600 grid grid-cols-3 grid-flow-row grid-rows-1`}>
+                
+                  {images ? images.map((img) => {
+                      
+                      return (
+                        <div className='w-28 h-28 object-cover overflow-hidden'>
+                              <img onClick={(e) => setImage(e.target.src)} className='w-full h-full' src={img} alt="photo" />
+                        </div>
+                      )
+                    }) : null}
+                
+                
+                <div className='flex-col flex place-content-center justify-center'>
+
+                  <input onChange={(e) => handleSaveImages(e.target.files[0])} className='bg-blue-600 text-white w-24' type='file'/>
+                </div>
+                
+            </div>
+            <div>
                 <button type='submit' className='rounded-md text-white bg-blue-600 px-4 py-1'>SAVE</button>
             </div>
       </form>
