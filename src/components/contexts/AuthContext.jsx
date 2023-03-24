@@ -13,6 +13,7 @@ import {
 import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { db, storage } from '../Database';
+import { v4 as uuidv4 } from 'uuid';
 
 // Initialise the context
 const UserContext = createContext();
@@ -41,13 +42,27 @@ const AuthProvider = ({children}) => {
         photo: ''
 
     });
+    const [ comments, writeComments ] = useState({
+
+      name: '',
+      date: '',
+      photo:'',
+      id: '',
+      uid: '',
+      comm: ''
+
+    })
+
+    
     const [ userMessage, setUserMessage ] = useState();
     const [ images, setListImages ] = useState([]);
+    const [ userComments, setUserComments ] = useState();
     const imageRef = ref(storage, 'images/');
 
     console.log(userMessage);
     console.log(chat)
     console.log(images)
+    console.log(comments)
   
     const createUser = (email,password) => {
 
@@ -115,7 +130,7 @@ const AuthProvider = ({children}) => {
     function setMessage(e, user){
       
       setChat({
-        id: Math.random(),
+        id: uuidv4(),
         date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
         message: e,
         name: user.displayName,
@@ -125,12 +140,44 @@ const AuthProvider = ({children}) => {
 
     }
 
+    function setComments(id, comm, user){
+
+      writeComments({
+
+        name: user.displayName,
+        date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
+        photo: user.photoURL,
+        id: id,
+        uid: user.uid,
+        comm: comm
+
+
+      });
+
+
+    }
+
+
+    function pushComments(){
+
+      const collectionRef = collection(db, 'comments');
+
+      if(comments.comm !== ''){
+
+       
+        return addDoc(collectionRef, comments);
+
+      }
+      
+
+    }
+
     function pushMessages(){
 
       const collectionRef = collection(db, 'chat');
       if(chat.message !== ''){
 
-        console.log('Partie')
+       
         return addDoc(collectionRef, chat);
 
       }
@@ -181,6 +228,29 @@ const AuthProvider = ({children}) => {
 
     }
 
+    async function getComments(){
+
+      try{
+
+        const comments = await getDocs(query(collection(db, 'comments'), orderBy("date", 'asc')));
+        const filtred = comments.docs.map((doc) => {
+ 
+          return doc.data();
+ 
+        });  
+        
+        setUserComments(filtred);
+
+
+      }catch(e){
+
+        console.log(e.message);
+
+      }
+
+
+    }
+
 
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
@@ -192,6 +262,7 @@ const AuthProvider = ({children}) => {
         });
         getMessages();
         getImages();
+        getComments();
         return () => {
           unsubscribe();   
         };
@@ -207,7 +278,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments }}>
       {children}
     </UserContext.Provider>
   )

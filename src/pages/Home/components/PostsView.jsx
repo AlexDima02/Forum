@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { UserAuth } from '../../../components/contexts/AuthContext';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function PostsView() {
 
-    const { userMessage, user } = UserAuth();
-    console.log(userMessage);
+    const { userMessage, user, userComments } = UserAuth();
+    const [ currentLink, setCurrentLink ] = useState('');
+    
+    
     
   return (
     <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 border border-gray-300 min-h-screen'>
@@ -14,7 +18,9 @@ function PostsView() {
 
         </div>
 
-        {userMessage ? userMessage?.map(element => (
+        {userMessage ? userMessage?.map((element) => (
+          <a href={`/thread/${element.id}`} key={element.id}>
+            
             <div className='flex h-1/5 mb-5'>
                 <div className='rounded-lg w-1/2 h-full border mr-5'>
                     <div className='overflow-hidden object-cover h-2/3'>
@@ -38,10 +44,18 @@ function PostsView() {
                        <div className='w-auto h-fit mt-4'>
                         <p>{element.message}</p>
                        </div>
+                       <div className='flex place-content-end mt-10'>
+                          <div>
+                            <span className='pr-2'>12</span><ChatBubbleIcon/>
+                          </div>
+                          <div className='ml-5'>
+                            <span className='pr-2'>12</span><VisibilityIcon/>
+                          </div>
+                       </div>
                 
                 </div> 
             </div>  
-             
+          </a>
         )) : null}
     </div>
   )

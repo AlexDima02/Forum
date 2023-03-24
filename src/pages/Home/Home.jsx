@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../../components/contexts/AuthContext';
 import { TypeBar } from './components/TypeBar';
 import PostsView from './components/PostsView';
 
+
 function Home() {
 
     const { user, signout } = UserAuth();
     const navigate = useNavigate();
-
     
+
 
   return (
     <div className='max-w-7xl m-auto h-screen md:flex'>
