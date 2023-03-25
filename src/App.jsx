@@ -19,7 +19,7 @@ import { UserAuth } from './components/contexts/AuthContext';
 function App() {
   
   const { userMessage, user } = UserAuth();
-  console.log(userMessage);
+  
 
   return (
       <>

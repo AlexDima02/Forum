@@ -6,7 +6,7 @@ function TypeBar() {
   const { user, setMessage, pushMessages, getMessages } = UserAuth();
   const [ text, setText ] = useState('');
   
-  console.log(text)
+  
   // setMessage(text, user);
 
   const handleSubmit = async (e) => {

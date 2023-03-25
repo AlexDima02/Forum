@@ -2,13 +2,16 @@ import React, { useState } from 'react'
 import { UserAuth } from '../../../components/contexts/AuthContext';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ArrowCircleUpSharpIcon from '@mui/icons-material/ArrowCircleUpSharp';
+
 
 function PostsView() {
 
-    const { userMessage, user, userComments } = UserAuth();
+    const { userMessage, user, userComments, deletePosts } = UserAuth();
     const [ currentLink, setCurrentLink ] = useState('');
     
     
+      
     
   return (
     <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 border border-gray-300 min-h-screen'>
@@ -44,15 +47,18 @@ function PostsView() {
                        <div className='w-auto h-fit mt-4'>
                         <p>{element.message}</p>
                        </div>
-                       <div className='flex place-content-end mt-10'>
-                          <div>
-                            <span className='pr-2'>12</span><ChatBubbleIcon/>
-                          </div>
-                          <div className='ml-5'>
-                            <span className='pr-2'>12</span><VisibilityIcon/>
-                          </div>
-                       </div>
-                
+                       
+                      <div className='flex place-content-end mt-10'>
+                        <div>
+                          <span className='pr-2'>{userComments ? userComments.filter((item) => item.id === element.id).length : 0}</span><ChatBubbleIcon/>
+                        </div>
+                        <div className='ml-5'>
+                          <span className='pr-2'>12</span><VisibilityIcon/>
+                        </div>
+                        <div className='ml-5'>
+                          <span className='pr-2'>12</span><ArrowCircleUpSharpIcon/>
+                        </div>
+                      </div>
                 </div> 
             </div>  
           </a>

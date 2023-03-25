@@ -10,7 +10,7 @@ import {
   verifyPasswordResetCode, confirmPasswordReset,
   updateProfile, updateEmail, reauthenticateWithCredential, deleteUser 
 } from 'firebase/auth'
-import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
+import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query, deleteDoc, where  } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { db, storage } from '../Database';
 import { v4 as uuidv4 } from 'uuid';
@@ -60,10 +60,9 @@ const AuthProvider = ({children}) => {
     const imageRef = ref(storage, 'images/');
 
     console.log(userMessage);
+    console.log(userComments);
     console.log(chat)
-    console.log(images)
-    console.log(comments)
-  
+    
     const createUser = (email,password) => {
 
       return createUserWithEmailAndPassword(auth, email, password);
@@ -127,7 +126,7 @@ const AuthProvider = ({children}) => {
 
     }
 
-    function setMessage(e, user){
+    function setMessage(e, user, numberOfComments){
       
       setChat({
         id: uuidv4(),
@@ -135,7 +134,8 @@ const AuthProvider = ({children}) => {
         message: e,
         name: user.displayName,
         uid: user.uid,
-        photo: user.photoURL
+        photo: user.photoURL,
+        comments: ''
       });
 
     }
@@ -174,11 +174,10 @@ const AuthProvider = ({children}) => {
 
     function pushMessages(){
 
-      const collectionRef = collection(db, 'chat');
+      
       if(chat.message !== ''){
 
-       
-        return addDoc(collectionRef, chat);
+        return setDoc(doc(db, "chat", chat.id), chat);
 
       }
 
@@ -195,6 +194,22 @@ const AuthProvider = ({children}) => {
      });  
      setUserMessage(filtred);
      
+    }
+
+
+    function deletePosts(id){
+
+
+      return deleteDoc(doc(db, "chat", id));
+
+
+    }
+
+    function deleteComments(id){
+
+      return deleteDoc(doc(db, "comments", id));
+
+
     }
 
     function uploadImages(file){
@@ -234,7 +249,7 @@ const AuthProvider = ({children}) => {
 
         const comments = await getDocs(query(collection(db, 'comments'), orderBy("date", 'asc')));
         const filtred = comments.docs.map((doc) => {
- 
+          console.log(doc)
           return doc.data();
  
         });  
@@ -251,7 +266,7 @@ const AuthProvider = ({children}) => {
 
     }
 
-
+  
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
       
@@ -278,7 +293,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments }}>
       {children}
     </UserContext.Provider>
   )

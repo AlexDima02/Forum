@@ -7,7 +7,7 @@ function Navbar() {
 
   const { user, signout } = UserAuth();
   const [ show, setShow ] = useState(false);
-  console.log(show);
+  
 
   const navigate = useNavigate();
 
