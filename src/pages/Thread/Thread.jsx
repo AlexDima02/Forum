@@ -7,15 +7,17 @@ import DeleteForeverSharpIcon from '@mui/icons-material/DeleteForeverSharp';
 import ArrowCircleUpSharpIcon from '@mui/icons-material/ArrowCircleUpSharp';
 import { query, where, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../components/Database';
+import CommentOptions from './components/CommentOptions';
 
 function Thread() {
 
-    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments } = UserAuth();
+    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds } = UserAuth();
     const [ open, setOpen ] = useState(false);
     const navigator = useNavigate();
     console.log(open)
     console.log(userMessage)
     console.log(userComments)
+    console.log(commentIds)
     const { id } = useParams();
     
     const calculateNumber = () => {
@@ -33,10 +35,12 @@ function Thread() {
     const result = calculateNumber()
     console.log(result.length)
 
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
         calculateNumber();
+        
 
         try{
 
@@ -44,9 +48,8 @@ function Thread() {
              pushComments();
              // Get the comments to see - #2 request
              getComments();
+             
             
-            
-
         }catch(e){
 
             console.log(e.message);
@@ -57,6 +60,7 @@ function Thread() {
 
     }
 
+    // Delete the entire thread including the comments
     const handleDelete = async () => {
         
         
@@ -65,31 +69,17 @@ function Thread() {
             // Delete the thread with that id - #3 request
             deletePosts(id);
             // After deleting posts free up the space and clear the comments of that post that was deleted
-            // Search for the keys that are equal to the URL or id of the post
-            // Loop through the array of ids and clear them one by one
-
+            // Search for the keys that are equal to the id of each comment, so the refference is the id of each comment
+            // If the comments postID is equal to the id from the URL, meaning id of the post
+            // Map through them and delete them one by one
+            console.log(userComments);
             // Get the comments with the ids that are == with my deleted thread created by Firebase - #4 request
-            const q = query(collection(db, "comments"), where("id", "==", `${id}`));
-            const comments = await getDocs(q);
-            // Map through the comments requested and return all of their random ids created by Firebase
-            const filtred = comments.docs?.map((doc) => {
- 
-                return doc.ref.id;
-    
-            });
-             
-            // Loop through the array and for each of the random key, delete the comments - #5 request
-             filtred.map((item) => {
-
-                console.log(item)
-                return deleteComments(item);
-
-             })
-
+            const filter = userComments.filter((el) => el.postID === id);
+            filter.map((el) => deleteComments(el.id));
             
-            // Show how messages disappeared - #6 request
+            // Show how messages disappeared - #4 request
             getMessages();
-            // Navigate to home after - #7 request
+            // Navigate to home after - #5 request
             navigator('/home');
 
             }catch(e){
@@ -102,7 +92,6 @@ function Thread() {
     }
 
     
-
   return (
     <div className='max-w-7xl m-auto flex flex-col h-fit overflow-y-hidden overflow-x-hidden'>
         {userMessage ? userMessage.map((element) => {
@@ -121,14 +110,13 @@ function Thread() {
                         
                         </div>
                         <div className='flex place-content-end mt-10'>
-                            
-                            <span onClick={() => handleDelete()}>Delete</span>
+                            {/* Check if the user connected is the author of the post to be able to delete its own post */}
+                            {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
                             <span className='mx-5'>Upvote<span className='pl-2'><ArrowCircleUpSharpIcon/></span></span>
                             <p className='text-gray-300 font-bold'>Last edited on {element.date}</p>
                             
                         </div>
                         
-
                     </div>
 
                 )    
@@ -138,7 +126,8 @@ function Thread() {
         }) : null}
 
         {userComments ? userComments?.map((el) => {
-            if(el.id === id){
+
+            if(el.postID === id){
 
                 return (
                         <div className='flex h-1/5 my-10'>
@@ -164,12 +153,10 @@ function Thread() {
                                     <div className='w-auto h-fit mt-4'>
                                         <p>{el.comm}</p>
                                     </div>
-                                    <div className='flex mt-5'>
-
-                                        <span onClick={(e) => console.log(e.target.id)} id={el.id} className='mr-10'>Delete</span>
-                                        <span>Edit</span>
-
-                                    </div>
+                                    
+                                    <>
+                                        {user.uid === el.uid ? <CommentOptions id={el.id}/> : null}
+                                    </>
                                 
                                 </div>
 

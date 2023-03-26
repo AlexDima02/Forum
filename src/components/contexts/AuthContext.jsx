@@ -10,7 +10,7 @@ import {
   verifyPasswordResetCode, confirmPasswordReset,
   updateProfile, updateEmail, reauthenticateWithCredential, deleteUser 
 } from 'firebase/auth'
-import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query, deleteDoc, where  } from "firebase/firestore";
+import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query, deleteDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { db, storage } from '../Database';
 import { v4 as uuidv4 } from 'uuid';
@@ -49,19 +49,22 @@ const AuthProvider = ({children}) => {
       photo:'',
       id: '',
       uid: '',
+      postID: '',
       comm: ''
 
     })
 
     
     const [ userMessage, setUserMessage ] = useState();
+    const [ commentIds, setCommentIds ] = useState();
+    console.log(commentIds);
     const [ images, setListImages ] = useState([]);
     const [ userComments, setUserComments ] = useState();
     const imageRef = ref(storage, 'images/');
 
     console.log(userMessage);
     console.log(userComments);
-    console.log(chat)
+    console.log(comments)
     
     const createUser = (email,password) => {
 
@@ -134,8 +137,7 @@ const AuthProvider = ({children}) => {
         message: e,
         name: user.displayName,
         uid: user.uid,
-        photo: user.photoURL,
-        comments: ''
+        photo: user.photoURL
       });
 
     }
@@ -147,8 +149,9 @@ const AuthProvider = ({children}) => {
         name: user.displayName,
         date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
         photo: user.photoURL,
-        id: id,
+        id: uuidv4(),
         uid: user.uid,
+        postID: id,
         comm: comm
 
 
@@ -159,16 +162,23 @@ const AuthProvider = ({children}) => {
 
 
     function pushComments(){
-
-      const collectionRef = collection(db, 'comments');
+      
+      // const collectionRef = collection(db, 'comments');
 
       if(comments.comm !== ''){
 
        
-        return addDoc(collectionRef, comments);
+        return setDoc(doc(db, "comments", comments.id), comments);;
 
       }
       
+
+    }
+
+    function editComments(id, input){
+
+      const commentRefference = doc(db, "comments", id);
+      return updateDoc(commentRefference, {comm: input, date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' })});
 
     }
 
@@ -252,10 +262,15 @@ const AuthProvider = ({children}) => {
           console.log(doc)
           return doc.data();
  
+        });
+        const getOnlyIdComments = comments.docs.map((doc) => {
+          
+          return doc.id;
+ 
         });  
         
         setUserComments(filtred);
-
+        setCommentIds(getOnlyIdComments);
 
       }catch(e){
 
@@ -293,7 +308,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, commentIds, editComments }}>
       {children}
     </UserContext.Provider>
   )

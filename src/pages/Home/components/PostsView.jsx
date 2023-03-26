@@ -50,7 +50,7 @@ function PostsView() {
                        
                       <div className='flex place-content-end mt-10'>
                         <div>
-                          <span className='pr-2'>{userComments ? userComments.filter((item) => item.id === element.id).length : 0}</span><ChatBubbleIcon/>
+                          <span className='pr-2'>{userComments ? userComments.filter((item) => item.postID === element.id).length : 0}</span><ChatBubbleIcon/>
                         </div>
                         <div className='ml-5'>
                           <span className='pr-2'>12</span><VisibilityIcon/>
