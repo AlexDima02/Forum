@@ -10,7 +10,7 @@ import {
   verifyPasswordResetCode, confirmPasswordReset,
   updateProfile, updateEmail, reauthenticateWithCredential, deleteUser 
 } from 'firebase/auth'
-import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query, deleteDoc, updateDoc, deleteField, arrayRemove, arrayUnion } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { db, storage } from '../Database';
 import { v4 as uuidv4 } from 'uuid';
@@ -138,7 +138,7 @@ const AuthProvider = ({children}) => {
         name: user.displayName,
         uid: user.uid,
         photo: user.photoURL,
-        likes: 0
+        likes: []
       });
 
     }
@@ -282,44 +282,70 @@ const AuthProvider = ({children}) => {
 
     }
 
-    function likeStateThreads(id, likes){
+    function deleteLikeUser(id){
 
-        return setDoc(doc(db, "likes", id), likes);
+        const likeRefference = doc(db, "chat", id);
+        return updateDoc(likeRefference, {
+          likes: arrayRemove(user.uid)
+      });;
 
     }
 
-    function updateStateLikes(){
+    function updateStateLikes(id){
 
       
-      like.map((item) => {
+      const likeRefference = doc(db, "chat", id);
+      return updateDoc(likeRefference, {likes: arrayUnion(user.uid)});
 
-        if(item.ownerId === user.uid){
 
-            console.log(item.id)
-            const likeRefference = doc(db, "likes", item.id);
-            return updateDoc(likeRefference, {like: 0});
+    }
+
+    async function updateThreadFeedback(id, element){
+        
+      // Take the element = current post and return the array with the users that were likeing my post
+      const likes = element.likes?.map((item) => {
+
+        return item;
+
+      })
+      
+      
+      // Check the selected like array for my current user uid
+      const check = () => {
+        return likes.includes(user.uid);
+
+      }
+      
+      console.log(check());
+      // If array from likes have user.uid in it (check true) 
+        // Add user.id that is equal to the current one  
+      // Else array from like doen't have actual user.uid in it
+        // Delete user.id that is equal to the current one  
+      try{
+
+        if(!check()){
+
+          updateStateLikes(id);
+          console.log('Like added!')
+          getMessages();
+          
+        }else if(check()){
+
+          deleteLikeUser(id);
+          getMessages();
+          console.log('Like removed!')
 
         }
 
+        }catch(e){
 
-      })
+          console.log(e.message);
+        
+        
+        }
 
+  }
 
-    }
-
-    async function getLikes(){
-
-      const likes = await getDocs(query(collection(db, 'likes')));
-      const filtred = likes.docs.map((doc) => {
-        console.log(doc)
-        return doc.data();
-
-      });
-      
-      setLikes(filtred);
-
-
-    }
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
       
@@ -331,7 +357,7 @@ const AuthProvider = ({children}) => {
         getMessages();
         getImages();
         getComments();
-        getLikes();
+        
         return () => {
           unsubscribe();   
         };
@@ -347,7 +373,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, likeStateThreads, updateStateLikes, getLikes, like }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback }}>
       {children}
     </UserContext.Provider>
   )

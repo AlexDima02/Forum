@@ -3,64 +3,14 @@ import { UserAuth } from '../../../components/contexts/AuthContext';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowCircleUpSharpIcon from '@mui/icons-material/ArrowCircleUpSharp';
-
+import { v4 as uuidv4 } from 'uuid';
 
 function PostsView() {
 
-    const { userMessage, user, userComments, deletePosts, likeStateThreads, updateStateLikes, getLikes, like } = UserAuth();
+    const { userMessage, user, userComments, deletePosts, updateStateLikes, deleteLikeUser, getMessages, updateThreadFeedback } = UserAuth();
     const [ currentLink, setCurrentLink ] = useState('');
-    const [ checked, setCheck ] = useState({
-
-      pressed: false,
-      id: '',
-      ownerId: '',
-      like: 0
-
-    });
-    
-    
-    
-    const updateThreadFeedback = async (id) => {
-        
-        // Set my likes
-        setCheck({id: id, pressed: !checked.pressed, ownerId: user.uid, like: 1})
-        if(!checked.pressed){
-          // Set one like for the current user if the status is checked
-          console.log(checked.pressed)
-          try{
-
-            console.log(checked);
-            likeStateThreads(id,checked);
-            console.log('Like added!');
-
-          }catch(e){
-
-            console.log(e.message);
-
-          }
-          
-
-        }else{
-          
-          try{
-
-            updateStateLikes();
-            console.log('Like removed!');
-
-          }catch(e){
-
-            console.log(e.message);
-
-          }
-
-        
-
-        }
-
-
-
-    }
-      
+    const [ checked, setCheck ] = useState(true);
+   
     
   return (
     <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 border border-gray-300 min-h-screen'>
@@ -109,7 +59,7 @@ function PostsView() {
                         <div className='flex'>
 
                           <div className=''>
-                            <span id={element.id} onClick={(e) => updateThreadFeedback(e.target.id)} className='pr-2'>11</span><ArrowCircleUpSharpIcon/>
+                            <span id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} className='pr-2 cursor-pointer'>{element.likes ? element.likes.length : 0}&nbsp;&nbsp;&nbsp;<ArrowCircleUpSharpIcon sx={{ fontSize: 30 }}/></span>
                           </div>
 
                         </div>

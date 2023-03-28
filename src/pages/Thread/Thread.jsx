@@ -11,7 +11,7 @@ import CommentOptions from './components/CommentOptions';
 
 function Thread() {
 
-    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds } = UserAuth();
+    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds, updateThreadFeedback } = UserAuth();
     const [ open, setOpen ] = useState(false);
     const navigator = useNavigate();
     console.log(open)
@@ -112,7 +112,7 @@ function Thread() {
                         <div className='flex place-content-end mt-10'>
                             {/* Check if the user connected is the author of the post to be able to delete its own post */}
                             {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
-                            <span className='mx-5'>Upvote<span className='pl-2'><ArrowCircleUpSharpIcon/></span></span>
+                            <span id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} className='mx-5 cursor-pointer'>SSSS<ArrowCircleUpSharpIcon sx={{ fontSize: 30 }}/>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
                             <p className='text-gray-300 font-bold'>Last edited on {element.date}</p>
                             
                         </div>
