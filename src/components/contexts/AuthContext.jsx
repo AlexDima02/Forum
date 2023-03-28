@@ -56,15 +56,15 @@ const AuthProvider = ({children}) => {
 
     
     const [ userMessage, setUserMessage ] = useState();
-    const [ commentIds, setCommentIds ] = useState();
-    console.log(commentIds);
     const [ images, setListImages ] = useState([]);
     const [ userComments, setUserComments ] = useState();
     const imageRef = ref(storage, 'images/');
+    const [ like, setLikes ] = useState();
 
     console.log(userMessage);
     console.log(userComments);
     console.log(comments)
+    console.log(like)
     
     const createUser = (email,password) => {
 
@@ -137,7 +137,8 @@ const AuthProvider = ({children}) => {
         message: e,
         name: user.displayName,
         uid: user.uid,
-        photo: user.photoURL
+        photo: user.photoURL,
+        likes: 0
       });
 
     }
@@ -270,7 +271,7 @@ const AuthProvider = ({children}) => {
         });  
         
         setUserComments(filtred);
-        setCommentIds(getOnlyIdComments);
+        
 
       }catch(e){
 
@@ -281,7 +282,44 @@ const AuthProvider = ({children}) => {
 
     }
 
-  
+    function likeStateThreads(id, likes){
+
+        return setDoc(doc(db, "likes", id), likes);
+
+    }
+
+    function updateStateLikes(){
+
+      
+      like.map((item) => {
+
+        if(item.ownerId === user.uid){
+
+            console.log(item.id)
+            const likeRefference = doc(db, "likes", item.id);
+            return updateDoc(likeRefference, {like: 0});
+
+        }
+
+
+      })
+
+
+    }
+
+    async function getLikes(){
+
+      const likes = await getDocs(query(collection(db, 'likes')));
+      const filtred = likes.docs.map((doc) => {
+        console.log(doc)
+        return doc.data();
+
+      });
+      
+      setLikes(filtred);
+
+
+    }
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
       
@@ -293,6 +331,7 @@ const AuthProvider = ({children}) => {
         getMessages();
         getImages();
         getComments();
+        getLikes();
         return () => {
           unsubscribe();   
         };
@@ -308,7 +347,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, commentIds, editComments }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, likeStateThreads, updateStateLikes, getLikes, like }}>
       {children}
     </UserContext.Provider>
   )
