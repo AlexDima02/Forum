@@ -8,10 +8,13 @@ import ArrowCircleUpSharpIcon from '@mui/icons-material/ArrowCircleUpSharp';
 import { query, where, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../components/Database';
 import CommentOptions from './components/CommentOptions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUp, faAddressBook } from '@fortawesome/free-solid-svg-icons'
+import ReplyComponent from './components/ReplyComponent';
 
 function Thread() {
 
-    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds, updateThreadFeedback } = UserAuth();
+    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds, updateThreadFeedback, like } = UserAuth();
     const [ open, setOpen ] = useState(false);
     const navigator = useNavigate();
     console.log(open)
@@ -112,7 +115,7 @@ function Thread() {
                         <div className='flex place-content-end mt-10'>
                             {/* Check if the user connected is the author of the post to be able to delete its own post */}
                             {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
-                            <span id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} className='mx-5 cursor-pointer'>SSSS<ArrowCircleUpSharpIcon sx={{ fontSize: 30 }}/>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
+                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={like ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
                             <p className='text-gray-300 font-bold'>Last edited on {element.date}</p>
                             
                         </div>
@@ -130,6 +133,7 @@ function Thread() {
             if(el.postID === id){
 
                 return (
+                    <div className='flex flex-col'>
                         <div className='flex h-1/5 my-10'>
                                 <div className='rounded-lg w-auto h-full border mr-5'>
                                     <div className='overflow-hidden object-cover w-28 h-28'>
@@ -155,15 +159,18 @@ function Thread() {
                                     </div>
                                     
                                     <>
-                                        {user.uid === el.uid ? <CommentOptions id={el.id}/> : null}
+                                       <CommentOptions id={el.id} uid={el.uid}/>
                                     </>
-                                
+                                    
+                                    
                                 </div>
-
-                                
+                               
                                 
                         </div>
-                    
+                        <div className='w-full'>
+                            <ReplyComponent replies={el.replies} id={el.id}/>
+                        </div>
+                    </div>
                 )
 
             }

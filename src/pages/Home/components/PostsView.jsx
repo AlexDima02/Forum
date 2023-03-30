@@ -4,13 +4,16 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowCircleUpSharpIcon from '@mui/icons-material/ArrowCircleUpSharp';
 import { v4 as uuidv4 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUp, faAddressBook } from '@fortawesome/free-solid-svg-icons'
 
 function PostsView() {
 
     const { userMessage, user, userComments, deletePosts, updateStateLikes, deleteLikeUser, getMessages, updateThreadFeedback } = UserAuth();
     const [ currentLink, setCurrentLink ] = useState('');
     const [ checked, setCheck ] = useState(true);
-   
+    const [ like, setLikes ] = useState(false);
+    const [ identification, setIdentification ] = useState();
     
   return (
     <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 border border-gray-300 min-h-screen'>
@@ -59,7 +62,8 @@ function PostsView() {
                         <div className='flex'>
 
                           <div className=''>
-                            <span id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} className='pr-2 cursor-pointer'>{element.likes ? element.likes.length : 0}&nbsp;&nbsp;&nbsp;<ArrowCircleUpSharpIcon sx={{ fontSize: 30 }}/></span>
+                            <span  className='pr-2 cursor-pointer'>{element.likes ? element.likes.length : 0}&nbsp;&nbsp;&nbsp;<FontAwesomeIcon id={element.id} onClick={(e) => {updateThreadFeedback(e.target.id, element), setLikes(!like), setIdentification(element.id)}} icon={faArrowUp}></FontAwesomeIcon></span>
+                            {/* <ArrowCircleUpSharpIcon color='primary' sx={{ fontSize: 30 }}/> */}
                           </div>
 
                         </div>

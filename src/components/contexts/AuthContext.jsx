@@ -42,6 +42,7 @@ const AuthProvider = ({children}) => {
         photo: ''
 
     });
+
     const [ comments, writeComments ] = useState({
 
       name: '',
@@ -52,19 +53,30 @@ const AuthProvider = ({children}) => {
       postID: '',
       comm: ''
 
-    })
+    });
 
-    
+
     const [ userMessage, setUserMessage ] = useState();
     const [ images, setListImages ] = useState([]);
     const [ userComments, setUserComments ] = useState();
     const imageRef = ref(storage, 'images/');
-    const [ like, setLikes ] = useState();
+    const [ like, setLikes ] = useState(false);
+    const [ replies, writeReplies ] = useState({
 
+      commID: '',
+      uid: '',
+      reply: '',
+      date: '',
+      name: ''
+
+
+    })
+
+    console.log(replies);
     console.log(userMessage);
     console.log(userComments);
     console.log(comments)
-    console.log(like)
+    // console.log(like)
     
     const createUser = (email,password) => {
 
@@ -154,6 +166,21 @@ const AuthProvider = ({children}) => {
         uid: user.uid,
         postID: id,
         comm: comm
+
+
+      });
+
+
+    }
+    function setReplies(input){
+
+      writeReplies({
+
+        commID: uuidv4(),
+        uid: user.uid,
+        reply: input,
+        date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
+        name: user.displayName,
 
 
       });
@@ -295,6 +322,7 @@ const AuthProvider = ({children}) => {
 
       
       const likeRefference = doc(db, "chat", id);
+      setLikes(!like);
       return updateDoc(likeRefference, {likes: arrayUnion(user.uid)});
 
 
@@ -344,7 +372,15 @@ const AuthProvider = ({children}) => {
         
         }
 
-  }
+      }
+
+      function replyComments(id){
+
+        const replyRefference = doc(db, "comments", id);
+        return updateDoc(replyRefference, {replies: arrayUnion(replies)});
+  
+      }
+
 
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
@@ -359,7 +395,7 @@ const AuthProvider = ({children}) => {
         getComments();
         
         return () => {
-          unsubscribe();   
+          unsubscribe();  
         };
       }, []);
 
@@ -373,7 +409,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies }}>
       {children}
     </UserContext.Provider>
   )
