@@ -59,6 +59,7 @@ const AuthProvider = ({children}) => {
     const [ userMessage, setUserMessage ] = useState();
     const [ images, setListImages ] = useState([]);
     const [ userComments, setUserComments ] = useState();
+    const [ commentReplies, setCommentReplies ] = useState();
     const imageRef = ref(storage, 'images/');
     const [ like, setLikes ] = useState(false);
     const [ replies, writeReplies ] = useState({
@@ -243,9 +244,18 @@ const AuthProvider = ({children}) => {
 
     }
 
+    // Delete top level comments
     function deleteComments(id){
 
       return deleteDoc(doc(db, "comments", id));
+
+
+    }
+
+    // Delete second level comments
+    function deleteReplies(id){
+
+      return deleteDoc(doc(db, "replies", id));
 
 
     }
@@ -314,7 +324,7 @@ const AuthProvider = ({children}) => {
         const likeRefference = doc(db, "chat", id);
         return updateDoc(likeRefference, {
           likes: arrayRemove(user.uid)
-      });;
+        });
 
     }
 
@@ -374,6 +384,7 @@ const AuthProvider = ({children}) => {
 
       }
 
+      // First level comments
       function replyComments(id){
 
         const replyRefference = doc(db, "comments", id);
@@ -381,6 +392,37 @@ const AuthProvider = ({children}) => {
   
       }
 
+      function deleteReplyComments(postID, id){
+        console.log(id) // Code for deleting a specific field from the replies array (first level comments)
+        console.log(postID); // comments/code for each top level comment
+        const replyRefference = doc(db, "comments", postID);
+        return updateDoc(replyRefference, {replies: arrayRemove(id)});
+
+      }
+
+      function pushCommReplies(){
+
+        if(replies.reply !== ''){
+  
+          return setDoc(doc(db, "replies", replies.id), replies);
+  
+        }
+  
+      }
+  
+      async function getCommReplies(){
+  
+       
+        const replies = await getDocs(query(collection(db, 'replies'), orderBy("date", 'asc')));
+        const filtred = replies.docs.map((doc) => {
+   
+           return doc.data();
+   
+       });  
+       setCommentReplies(filtred);
+       
+      }
+      
 
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
@@ -393,6 +435,7 @@ const AuthProvider = ({children}) => {
         getMessages();
         getImages();
         getComments();
+        getCommReplies();
         
         return () => {
           unsubscribe();  
@@ -409,7 +452,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies, writeReplies, pushCommReplies, getCommReplies, commentReplies, deleteReplies, deleteReplyComments }}>
       {children}
     </UserContext.Provider>
   )

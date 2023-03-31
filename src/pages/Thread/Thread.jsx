@@ -10,7 +10,7 @@ import { db } from '../../components/Database';
 import CommentOptions from './components/CommentOptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faAddressBook } from '@fortawesome/free-solid-svg-icons'
-import ReplyComponent from './components/ReplyComponent';
+import ReplyComponent from './components/RepliesComponent/ReplyComponent';
 
 function Thread() {
 
@@ -167,7 +167,9 @@ function Thread() {
                                
                                 
                         </div>
+                        {/* Every reply for every comment on the post */}
                         <div className='w-full'>
+                            {console.log(el.id)}
                             <ReplyComponent replies={el.replies} id={el.id}/>
                         </div>
                     </div>
@@ -175,6 +177,8 @@ function Thread() {
 
             }
         }) : null}
+
+        
         
         <div className={`${!open ? 'translate-y-96 transition-all overflow-y-hidden' : 'transition-all translate-y-0'} shadow-lg rounded-lg w-full h-full border-2 border-blue-500`}>
             <form action="" onSubmit={(e) => handleSubmit(e)}>
