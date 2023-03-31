@@ -14,7 +14,7 @@ import ReplyComponent from './components/RepliesComponent/ReplyComponent';
 
 function Thread() {
 
-    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds, updateThreadFeedback, like } = UserAuth();
+    const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds, updateThreadFeedback, like, commentReplies, deleteReplies } = UserAuth();
     const [ open, setOpen ] = useState(false);
     const navigator = useNavigate();
     console.log(open)
@@ -80,6 +80,9 @@ function Thread() {
             const filter = userComments.filter((el) => el.postID === id);
             filter.map((el) => deleteComments(el.id));
             
+            // Delete all the replies
+            const replies = commentReplies?.filter((el) => el.postID === id);
+            replies.map((el) => deleteReplies(el.id));
             // Show how messages disappeared - #4 request
             getMessages();
             // Navigate to home after - #5 request
@@ -170,7 +173,7 @@ function Thread() {
                         {/* Every reply for every comment on the post */}
                         <div className='w-full'>
                             {console.log(el.id)}
-                            <ReplyComponent replies={el.replies} id={el.id}/>
+                            <ReplyComponent postIdentifiacation={el.postID} replies={el.replies} id={el.id}/>
                         </div>
                     </div>
                 )
@@ -197,7 +200,7 @@ function Thread() {
                 <textarea onChange={(e) => setComments(id, e.target.value, user)} className='outline-none border border-blue-500 w-full h-1/2 p-2 md:w-1/2' name="" id="" cols="30" rows="10"></textarea>
 
                 <div className='flex place-content-end'>
-                    <button type='submit' className='bg-blue-600 px-5 py-2 text-white w-fit'>Reply</button>
+                    <button type='submit' className='bg-blue-600 px-5 py-2 text-white w-fit cursor-pointer'>Reply</button>
                 </div>
             </form>
         </div>

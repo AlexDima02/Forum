@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 function CommentOptions(props) {
 
-    const { getComments, deleteComments, editComments, replyComments, setReplies, user } = UserAuth();
+    const { getComments, deleteComments, editComments, replyComments, setReplies, user, deleteReplies, commentReplies } = UserAuth();
     const [ input, setInput ] = useState('');
     const [ open, setOpen ] = useState(false);
     const [ replying, isReplying ] = useState(false);
@@ -12,10 +12,13 @@ function CommentOptions(props) {
     
     
     const handleSpecificComment = async (el) => {
-
+        console.log(el)
         try{
 
             deleteComments(el);
+            // Delete all the replies
+            const replies = commentReplies?.filter((el) => el.postID === el);
+            replies.map((el) => deleteReplies(el.id));
             getComments();
             
 
@@ -78,13 +81,13 @@ function CommentOptions(props) {
                                                    
                 {user.uid === props.uid ? <span onClick={(e) => handleSpecificComment(e.target.id)} id={props.id} className='mr-10 cursor-pointer'>Delete</span> : null}
                 {user.uid === props.uid ? <span onClick={(e) => setOpen(!open)}>Edit</span> : null}
-                <span onClick={() => isReplying(!replying)}>Reply</span>
+                <span className='cursor-pointer' onClick={() => isReplying(!replying)}>Reply</span>
                 {replying && (
 
                     <div>
 
                         <input onChange={(e) => setReplies(e.target.value)} type="text" id={props.id}/>
-                        <span onClick={() => handleReply(props.id)}>Reply</span>
+                        <span className='cursor-pointer' onClick={() => handleReply(props.id)}>Reply</span>
 
                     </div>
 

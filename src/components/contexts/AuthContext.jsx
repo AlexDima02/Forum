@@ -74,9 +74,10 @@ const AuthProvider = ({children}) => {
     })
 
     console.log(replies);
-    console.log(userMessage);
-    console.log(userComments);
-    console.log(comments)
+    // console.log(userMessage);
+    // console.log(userComments);
+    // console.log(comments)
+    
     // console.log(like)
     
     const createUser = (email,password) => {
@@ -254,7 +255,7 @@ const AuthProvider = ({children}) => {
 
     // Delete second level comments
     function deleteReplies(id){
-
+      console.log(id)
       return deleteDoc(doc(db, "replies", id));
 
 
