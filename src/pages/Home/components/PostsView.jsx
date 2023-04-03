@@ -15,6 +15,7 @@ function PostsView() {
     const [ like, setLikes ] = useState(false);
     const [ identification, setIdentification ] = useState();
     
+    
   return (
     <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 border border-gray-300 min-h-screen'>
         <div className='mb-4'>
@@ -27,7 +28,7 @@ function PostsView() {
           
             
             <div className='flex h-1/5 mb-5'>
-
+              {console.log(element.likes.filter((el) => el.user === user.uid))}
                 <a href={`/thread/${element.id}`} key={element.id} className='rounded-lg w-1/2 h-full border mr-5'>
 
                   <div className=''>
@@ -62,7 +63,7 @@ function PostsView() {
                         <div className='flex'>
 
                           <div className=''>
-                            <span  className='pr-2 cursor-pointer'>{element.likes ? element.likes.length : 0}&nbsp;&nbsp;&nbsp;<FontAwesomeIcon id={element.id} onClick={(e) => {updateThreadFeedback(e.target.id, element), setLikes(!like), setIdentification(element.id)}} icon={faArrowUp}></FontAwesomeIcon></span>
+                            <span  className='pr-2 cursor-pointer'>{element.likes ? element.likes.length : 0}&nbsp;&nbsp;&nbsp;<FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => {updateThreadFeedback(e.target.id, element), setLikes(!like), setIdentification(element.id)}} icon={faArrowUp}></FontAwesomeIcon></span>
                             {/* <ArrowCircleUpSharpIcon color='primary' sx={{ fontSize: 30 }}/> */}
                           </div>
 
@@ -73,9 +74,11 @@ function PostsView() {
                           <div className='mr-5'>
                             <span className='pr-2'>{userComments ? userComments.filter((item) => item.postID === element.id).length : 0}</span><ChatBubbleIcon/>
                           </div>
-                          <div>
+                          
+                          {/* How many people viewed your post functionality */}
+                          {/* <div>
                             <span className='pr-2'>12</span><VisibilityIcon/>
-                          </div>
+                          </div> */}
 
                         </div>
 

@@ -321,10 +321,10 @@ const AuthProvider = ({children}) => {
     }
 
     function deleteLikeUser(id){
-
+        
         const likeRefference = doc(db, "chat", id);
         return updateDoc(likeRefference, {
-          likes: arrayRemove(user.uid)
+          likes: arrayRemove({user: user.uid, state: true})
         });
 
     }
@@ -334,20 +334,23 @@ const AuthProvider = ({children}) => {
       
       const likeRefference = doc(db, "chat", id);
       setLikes(!like);
-      return updateDoc(likeRefference, {likes: arrayUnion(user.uid)});
+      return updateDoc(likeRefference, {likes: arrayUnion({user: user.uid, state: true})});
 
 
     }
 
-    async function updateThreadFeedback(id, element){
+    async function updateThreadFeedback(id, element, obj){
         
       // Take the element = current post and return the array with the users that were likeing my post
       const likes = element.likes?.map((item) => {
-
-        return item;
+       
+        return item.user;
 
       })
+
       
+      // console.log(id);
+      // console.log(obj);
       
       // Check the selected like array for my current user uid
       const check = () => {
@@ -369,7 +372,7 @@ const AuthProvider = ({children}) => {
           getMessages();
           
         }else if(check()){
-
+         
           deleteLikeUser(id);
           getMessages();
           console.log('Like removed!')

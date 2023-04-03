@@ -116,9 +116,10 @@ function Thread() {
                         
                         </div>
                         <div className='flex place-content-end mt-10'>
+                            
                             {/* Check if the user connected is the author of the post to be able to delete its own post */}
                             {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
-                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={like ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
+                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
                             <p className='text-gray-300 font-bold'>Last edited on {element.date}</p>
                             
                         </div>
