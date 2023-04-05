@@ -6,7 +6,7 @@ import Alert from '../Alert';
 function SignIn() {
 
     // Import login functionality from the context inside the component AuthContext
-    const { login, user } = UserAuth();
+    const { login, user, getMessages } = UserAuth();
     console.log(user)
     const [ email, setEmail ] = useState('');
     console.log(email)
@@ -23,8 +23,12 @@ function SignIn() {
         try{
 
             setError('')
-            await login(email, password);
-            navigate('/home');
+            const response = await login(email, password);
+            localStorage.setItem('account', response.user.isAnonymous);
+            console.log(response.user.isAnonymous);
+            navigate('/');
+            getMessages();
+
 
         }catch(e){
 

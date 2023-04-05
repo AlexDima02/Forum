@@ -10,13 +10,13 @@ function Home() {
     const { user, signout } = UserAuth();
     const navigate = useNavigate();
     
-
+    
 
   return (
     <div className='max-w-7xl m-auto h-screen md:flex'>
       <div className='w-1/2'>
         <h1>You are logged in!</h1>
-        <p>Welcome back {user ? user.displayName : null}</p>
+        {/* <p>Welcome back {user ? user.displayName : null}</p> */}
       </div>
       <div className='w-full'>
         <TypeBar />

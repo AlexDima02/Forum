@@ -22,11 +22,11 @@ function Navbar() {
     e.preventDefault();
     setShow(!show);
     await signout().then(() => {
-
+        
+        localStorage.clear();
         navigate('/login');
 
     })
-
 
   }
 
@@ -37,7 +37,7 @@ function Navbar() {
 
       <>
       
-            <li className='pr-5'><a href="/home">Home</a></li>
+            <li className='pr-5'><a href="/">Home</a></li>
             <div className='relative z-10'>
                 <div onClick={toggleDropdown} className='flex cursor-pointer'>
                   <h1>{user.displayName}</h1>
@@ -61,7 +61,7 @@ function Navbar() {
     return (
 
       <>
-              <li><a href="/home">Home</a></li>
+              <li><a href="/">Home</a></li>
               <li><a href="/login">Login</a></li>
               <li><a href="/register">Register</a></li>
            
@@ -77,7 +77,7 @@ function Navbar() {
             <img src="" alt="forum-logo" className='w-10 h-10' />
         </div>
         <ul className='flex w-1/2 place-content-between'>
-            {user ? isAuthenticated() : notAuthenticated()}
+            {user && !user.isAnonymous ? isAuthenticated() : notAuthenticated()}
         </ul>
     </nav>
   )

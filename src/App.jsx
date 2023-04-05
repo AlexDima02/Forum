@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import { Route, Routes } from 'react-router-dom';
@@ -18,16 +18,16 @@ import { UserAuth } from './components/contexts/AuthContext';
 
 function App() {
   
-  const { userMessage, user } = UserAuth();
+  const { userMessage, user, anonymSignIn } = UserAuth();
   
-
+  
   return (
       <>
         <Navbar />
         <Routes>
           <Route path="/register" element={<SignUp />} />
           <Route path="/login" element={<SignIn />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path='/thread/:id' element={<Thread />} />
           <Route path="/profile" element={<Dashboard />} />
           <Route path="/forgot-password" element={<ResetPassword />} />

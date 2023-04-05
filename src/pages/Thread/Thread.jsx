@@ -11,11 +11,13 @@ import CommentOptions from './components/CommentOptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faAddressBook } from '@fortawesome/free-solid-svg-icons'
 import ReplyComponent from './components/RepliesComponent/ReplyComponent';
+import PopupModal from '../../components/PopupModal';
 
 function Thread() {
 
     const { userMessage, user, setComments, userComments, pushComments, getComments, deletePosts, getMessages, deleteComments, commentIds, updateThreadFeedback, like, commentReplies, deleteReplies } = UserAuth();
     const [ open, setOpen ] = useState(false);
+    const [ openPopup, setPopup ] = useState(false);
     const navigator = useNavigate();
     console.log(open)
     console.log(userMessage)
@@ -86,7 +88,7 @@ function Thread() {
             // Show how messages disappeared - #4 request
             getMessages();
             // Navigate to home after - #5 request
-            navigator('/home');
+            navigator('/');
 
             }catch(e){
 
@@ -100,6 +102,14 @@ function Thread() {
     
   return (
     <div className='max-w-7xl m-auto flex flex-col h-fit overflow-y-hidden overflow-x-hidden'>
+
+        {/* Popup in case of anonymous user */}
+        <div className={openPopup ? 'h-screen w-screen fixed top-0 left-0 right-0 bottom-0 flex flex-col place-content-center z-40' : 'hidden'}>
+
+            <div className='bg-gray-900 opacity-50 h-screen w-screen fixed top-0 left-0 right-0 bottom-0'></div>
+            <PopupModal setPopup={setPopup} openPopup={openPopup}/>
+
+        </div>
         {userMessage ? userMessage.map((element) => {
             if(element.id === id){
 
@@ -119,7 +129,7 @@ function Thread() {
                             
                             {/* Check if the user connected is the author of the post to be able to delete its own post */}
                             {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
-                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => updateThreadFeedback(e.target.id, element)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
+                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => localStorage.getItem('account') ? updateThreadFeedback(e.target.id, element) : setPopup(!openPopup)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
                             <p className='text-gray-300 font-bold'>Last edited on {element.date}</p>
                             
                         </div>
@@ -163,7 +173,7 @@ function Thread() {
                                     </div>
                                     
                                     <>
-                                       <CommentOptions id={el.id} uid={el.uid}/>
+                                       <CommentOptions popUp={setPopup} popUpStatus={openPopup} id={el.id} uid={el.uid}/>
                                     </>
                                     
                                     
@@ -174,7 +184,7 @@ function Thread() {
                         {/* Every reply for every comment on the post */}
                         <div className='w-full'>
                             {console.log(el.id)}
-                            <ReplyComponent postIdentifiacation={el.postID} replies={el.replies} id={el.id}/>
+                            <ReplyComponent popUp={setPopup} popUpStatus={openPopup} postIdentifiacation={el.postID} replies={el.replies} id={el.id}/>
                         </div>
                     </div>
                 )
@@ -205,7 +215,7 @@ function Thread() {
                 </div>
             </form>
         </div>
-        <button onClick={() => setOpen(!open)} className='bg-blue-600 px-5 py-2 text-white w-fit'>{open ? 'Close' : 'Reply'}</button> 
+        <button onClick={() => localStorage.getItem('account') ? setOpen(!open) : setPopup(!openPopup)} className='bg-blue-600 px-5 py-2 text-white w-fit'>{open ? 'Close' : 'Reply'}</button> 
     </div>
   )
 }

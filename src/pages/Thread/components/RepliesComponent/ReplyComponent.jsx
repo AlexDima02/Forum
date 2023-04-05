@@ -29,7 +29,7 @@ function ReplyComponent(props) {
                             </div>
                             <div key={el.commID}>
                             
-                                <RepliesOptions post={props.postIdentifiacation} uid={el.uid} id={el.commID} replyCode={el} dbIdentification={props.id}/>
+                               {localStorage.getItem('account') ? <RepliesOptions post={props.postIdentifiacation} uid={el.uid} id={el.commID} replyCode={el} dbIdentification={props.id}/> : null} 
 
                             </div>
                         
@@ -51,7 +51,7 @@ function ReplyComponent(props) {
                                         <p>{reply.reply}</p>
                                     </div>
                                     
-                                    <RepliesOptions post={props.postIdentifiacation} uid={reply.uid} secondLevel={reply.id} id={el.commID} dbIdentification={reply.id}/>
+                                    {localStorage.getItem('account') ? <RepliesOptions post={props.postIdentifiacation} uid={reply.uid} secondLevel={reply.id} id={el.commID} dbIdentification={reply.id}/> : null}
                                 </div>
 
                             )

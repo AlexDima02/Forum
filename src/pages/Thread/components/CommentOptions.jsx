@@ -81,7 +81,7 @@ function CommentOptions(props) {
                                                    
                 {user.uid === props.uid ? <span onClick={(e) => handleSpecificComment(e.target.id)} id={props.id} className='mr-10 cursor-pointer'>Delete</span> : null}
                 {user.uid === props.uid ? <span onClick={(e) => setOpen(!open)}>Edit</span> : null}
-                <span className='cursor-pointer' onClick={() => isReplying(!replying)}>Reply</span>
+                <span className='cursor-pointer' onClick={() => localStorage.getItem('account') ? isReplying(!replying) : props.popUp(!props.popUpStatus)}>Reply</span>
                 {replying && (
 
                     <div>

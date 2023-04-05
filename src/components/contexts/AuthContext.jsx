@@ -8,7 +8,7 @@ import {
   signOut, 
   onAuthStateChanged,
   verifyPasswordResetCode, confirmPasswordReset,
-  updateProfile, updateEmail, reauthenticateWithCredential, deleteUser 
+  updateProfile, updateEmail, reauthenticateWithCredential, deleteUser, signInAnonymously 
 } from 'firebase/auth'
 import { doc, collection, setDoc, addDoc, getDoc, getDocs, orderBy, query, deleteDoc, updateDoc, deleteField, arrayRemove, arrayUnion } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
@@ -32,6 +32,8 @@ const AuthProvider = ({children}) => {
   
     // const [ loading, setLoading ] = useState(true);
     const [ user, setUser ] = useState({});
+    // State of my authentication
+    const [ authenticated, setAuthetication ] = useState(true); 
     const [ chat, setChat ] = useState({
 
         id: '',
@@ -73,9 +75,10 @@ const AuthProvider = ({children}) => {
 
     })
 
-    console.log(replies);
-    // console.log(userMessage);
-    // console.log(userComments);
+    console.log(user);
+    console.log(userMessage);
+    console.log(userComments);
+    console.log(authenticated);
     // console.log(comments)
     
     // console.log(like)
@@ -88,6 +91,7 @@ const AuthProvider = ({children}) => {
 
     const signout = () => {
 
+      // setAuthetication(true);
       return signOut(auth);
 
 
@@ -95,6 +99,7 @@ const AuthProvider = ({children}) => {
 
     function login(email, password) {
 
+        // setAuthetication(true);
         return signInWithEmailAndPassword(auth, email, password);
     
     }
@@ -427,6 +432,27 @@ const AuthProvider = ({children}) => {
        
       }
       
+      async function anonymSignIn(){
+
+        try{
+          
+         
+
+            signInAnonymously(auth);
+            console.log('Signed In as an anonym!')
+
+
+          
+                
+        }catch(e){
+        
+            console.log(e);
+        
+        }
+        // return signInAnonymously(auth);
+
+
+      }
 
       // When we unmount this component the state is not focusing on the current user anymore
       // This way we can begin from empty state and create another user
@@ -435,7 +461,14 @@ const AuthProvider = ({children}) => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
           console.log(currentUser);
           setUser(currentUser);
+          setAuthetication(false);
         });
+        
+        if(!localStorage.getItem('account')){
+
+          anonymSignIn();
+
+        }
         getMessages();
         getImages();
         getComments();
@@ -456,8 +489,8 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies, writeReplies, pushCommReplies, getCommReplies, commentReplies, deleteReplies, deleteReplyComments }}>
-      {children}
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies, writeReplies, pushCommReplies, getCommReplies, commentReplies, deleteReplies, deleteReplyComments, anonymSignIn }}>
+      {!authenticated && children}
     </UserContext.Provider>
   )
 }
