@@ -43,7 +43,7 @@ function Navbar() {
                   <h1>{user.displayName}</h1>
                   <span className={`ml-3 ${show ? 'rotate-0 transition-transform' : 'rotate-180 transition-transform'}`}><KeyboardArrowDownIcon /></span>
                 </div>
-                <div className={`${show ? 'opacity-1 absolute flex-col flex border border-gray-400-700 p-2 h-28 place-content-between translate-y-0 shadow-md transition duration-500' : 'transition duration-500 opacity-0 absolute flex-col flex border border-red-700 p-2 h-20 place-content-between -translate-y-72'} bg-white -z-10 w-full`}>
+                <div className={`${show ? 'opacity-1 absolute flex-col flex p-2 h-28 place-content-between translate-y-0 shadow-md transition duration-500' : 'transition duration-500 opacity-0 absolute flex-col flex p-2 h-20 place-content-between -translate-y-72'} bg-secondary-color -z-10 w-full`}>
                   <span className='border-gray-300 border-b pb-3'><a href="/profile">Profile</a></span>
                   <span className='pb-3'><a onClick={handleLogout} href="">Logout</a></span>
                 </div>
@@ -72,11 +72,12 @@ function Navbar() {
   }
 
   return (
-    <nav className='flex place-content-between align-middle mx-4 leading-10 border border-red-600'>
+    <nav className='flex place-content-between align-middle px-4 leading-10 py-2 bg-secondary-color'>
         <div className='w-full h-full'>
-            <img src="" alt="forum-logo" className='w-10 h-10' />
+            {/* <img src="" alt="forum-logo" className='w-10 h-10' /> */}
+            <p className='text-2xl text-white'>Curiosity Forum</p>
         </div>
-        <ul className='flex w-1/2 place-content-between'>
+        <ul className='flex w-1/2 place-content-between text-white'>
             {user && !user.isAnonymous ? isAuthenticated() : notAuthenticated()}
         </ul>
     </nav>

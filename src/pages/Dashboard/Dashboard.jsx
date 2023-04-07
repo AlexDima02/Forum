@@ -5,10 +5,10 @@ import DashboardDeleteAccount from './components/DashboardDeleteAccount'
 
 function Dashboard() {
   return (
-    <div>
-        <DashboardUser />
-        <DashboardPassword />
-        <DashboardDeleteAccount />
+    <div className='max-w-2xl m-auto'>
+          <DashboardUser />
+          <DashboardPassword />
+          <DashboardDeleteAccount />
     </div>
   )
 }

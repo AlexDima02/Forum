@@ -84,16 +84,16 @@ function RepliesOptions(props) {
                 <div>
                     <div className='flex place-content-between'>
                         <div>
-                            {user.uid === props.uid ? <span className='cursor-pointer' onClick={(e) => handleDelete(props.secondLevel, e.target.id, props.replyCode)} id={props.dbIdentification}>Delete</span> : null}
+                            {user.uid === props.uid ? <span className='cursor-pointer text-white' onClick={(e) => handleDelete(props.secondLevel, e.target.id, props.replyCode)} id={props.dbIdentification}>Delete</span> : null}
                         </div>
                         <div>
-                            <span className='cursor-pointer' onClick={() => setReplying(!replying)}>{replying ? 'Cancel' : 'Reply'}</span>
+                            <span className='cursor-pointer text-white' onClick={() => setReplying(!replying)}>{replying ? 'Cancel' : 'Reply'}</span>
                         </div>
                     </div>
                     <div>
                         <div className={replying ? `flex flex-col` : 'hidden'}>
-                            <input type="text" onChange={(e) => handleWrite(e.target.value)}/>
-                            <span onClick={() => handleSubmit()} className='cursor-pointer w-fit'>Reply</span>
+                            <textarea type="text" onChange={(e) => handleWrite(e.target.value)} className='text-text-color px-2 outline-none rounded-xl my-4 h-auto p-3'  placeholder='Reply to this person with..'/>
+                            <span onClick={() => handleSubmit()} className='cursor-pointer w-fit text-white'>Reply</span>
                         </div> 
                     </div>
                 </div>

@@ -77,25 +77,39 @@ function CommentOptions(props) {
 
   return (
     
-        <div className='flex mt-5'>
-                                                   
-                {user.uid === props.uid ? <span onClick={(e) => handleSpecificComment(e.target.id)} id={props.id} className='mr-10 cursor-pointer'>Delete</span> : null}
-                {user.uid === props.uid ? <span onClick={(e) => setOpen(!open)}>Edit</span> : null}
-                <span className='cursor-pointer' onClick={() => localStorage.getItem('account') ? isReplying(!replying) : props.popUp(!props.popUpStatus)}>Reply</span>
+        <div>
+            <div className='flex mt-5 w-1/2 place-content-between'>
+                <div>                              
+                    {user.uid === props.uid ? <span onClick={(e) => handleSpecificComment(e.target.id)} id={props.id} className='mr-10 cursor-pointer text-white'>Delete</span> : null}
+                </div>
+                <div>
+                    {user.uid === props.uid ? <span className='mr-10 cursor-pointer text-white' onClick={(e) => setOpen(!open)}>{open ? 'Cancel' : 'Edit'}</span> : null}
+                </div>
+                <div>
+                    <span className='cursor-pointer text-white' onClick={() => localStorage.getItem('account') ? isReplying(!replying) : props.popUp(!props.popUpStatus)}>{replying ? 'Cancel' : 'Reply'}</span>
+                </div>
+            </div>
+            
                 {replying && (
 
-                    <div>
+                    <div className='flex flex-col'>
 
-                        <input onChange={(e) => setReplies(e.target.value)} type="text" id={props.id}/>
-                        <span className='cursor-pointer' onClick={() => handleReply(props.id)}>Reply</span>
+                        <input onChange={(e) => setReplies(e.target.value)} type="text" id={props.id} className='text-text-color px-2 outline-none rounded-xl my-4' placeholder='Reply with..'/>
+                        <span className='cursor-pointer text-white' onClick={() => handleReply(props.id)}>Reply</span>
 
                     </div>
 
                 )}
-                <div className={`${open ? 'flex' : 'hidden'} border border-blue-300`}>
-                    <input onChange={(e) => setInput(e.target.value)} type="text" className='border border-blue-600' />
-                    <span onClick={(e) => handleEditComment(props.id)}>Edit</span>
-                </div>
+
+                {open && (
+
+                    <div className='flex flex-col'>
+                        <input onChange={(e) => setInput(e.target.value)} type="text" className='text-text-color px-2 outline-none rounded-xl my-4'/>
+                        <span className='text-white cursor-pointer' onClick={(e) => handleEditComment(props.id)}>Edit</span>
+                    </div>
+
+                )}
+                
                            
         </div>
   )

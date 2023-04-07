@@ -17,12 +17,12 @@ function ReplyComponent(props) {
                {replies ? replies?.map((el,index) => {
                 return (
                     <div>
-                        <div className='border border-gray-300 p-3 mt-5 rounded-lg h-full w-1/2'>
+                        <div className='bg-primary-color p-3 mt-5 rounded-lg h-full w-1/2'>
                             <div className='flex place-content-between'> 
-                                <h1>{el.name}</h1>
-                                <p>{el.date}</p>
+                                <h1 className='text-white'>{el.name}</h1>
+                                <p className='text-text-color opacity-50 font-bold'>{el.date}</p>
                             </div>
-                            <div>
+                            <div className='my-5 text-white'>
 
                                 <p>{el.reply}</p>
                                 
@@ -42,12 +42,12 @@ function ReplyComponent(props) {
                                 {console.log(el.commID)}
                             return (
                                 
-                                <div className='ml-20 border border-gray-300 p-3 mt-5 rounded-lg h-full w-1/2'>
+                                <div className='ml-20 bg-primary-color p-3 mt-5 rounded-lg h-full w-1/2'>
                                     <div className='flex place-content-between'>
-                                        <h1>{reply.name}</h1>
-                                        <p>{reply.date}</p>
+                                        <h1 className='text-white'>{reply.name}</h1>
+                                        <p className='text-text-color opacity-50 font-bold'>{reply.date}</p>
                                     </div>
-                                    <div className='my-5'>
+                                    <div className='my-5 text-white'>
                                         <p>{reply.reply}</p>
                                     </div>
                                     

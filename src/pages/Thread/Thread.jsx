@@ -53,7 +53,7 @@ function Thread() {
              pushComments();
              // Get the comments to see - #2 request
              getComments();
-             
+             setComments(null);
             
         }catch(e){
 
@@ -101,7 +101,7 @@ function Thread() {
 
     
   return (
-    <div className='max-w-7xl m-auto flex flex-col h-fit overflow-y-hidden overflow-x-hidden'>
+    <div className='max-w-7xl m-auto flex flex-col h-fit overflow-y-hidden overflow-x-hidden mt-10'>
 
         {/* Popup in case of anonymous user */}
         <div className={openPopup ? 'h-screen w-screen fixed top-0 left-0 right-0 bottom-0 flex flex-col place-content-center z-40' : 'hidden'}>
@@ -115,7 +115,7 @@ function Thread() {
 
                 return (
 
-                    <div className='w-full flex flex-col shadow-sm  rounded-md p-5 border border-gray-300 min-h-fit m-auto'>
+                    <div className='w-full flex flex-col shadow-sm  rounded-md p-5 bg-primary-color text-white min-h-fit m-auto'>
 
                         <div className='flex'>
                             <div className='w-16 h-16 overflow-hidden'>
@@ -129,8 +129,8 @@ function Thread() {
                             
                             {/* Check if the user connected is the author of the post to be able to delete its own post */}
                             {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
-                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-black'} id={element.id} onClick={(e) => localStorage.getItem('account') ? updateThreadFeedback(e.target.id, element) : setPopup(!openPopup)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
-                            <p className='text-gray-300 font-bold'>Last edited on {element.date}</p>
+                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-white'} id={element.id} onClick={(e) => localStorage.getItem('account') ? updateThreadFeedback(e.target.id, element) : setPopup(!openPopup)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
+                            <p className='text-text-color font-bold opacity-50'>Last edited on {element.date}</p>
                             
                         </div>
                         
@@ -149,7 +149,7 @@ function Thread() {
                 return (
                     <div className='flex flex-col'>
                         <div className='flex h-1/5 my-10'>
-                                <div className='rounded-lg w-auto h-full border mr-5'>
+                                <div className='rounded-lg w-auto h-full bg-primary-color text-text-color mr-5'>
                                     <div className='overflow-hidden object-cover w-28 h-28'>
                                     
                                         <img src={el.photo} alt="Nice image" className='w-full h-full'/>
@@ -165,10 +165,10 @@ function Thread() {
                                 
                                 
                                 </div>
-                                <div className='border border-gray-300 p-3 rounded-lg h-full w-full'>
+                                <div className='bg-primary-color p-3 rounded-lg h-full w-full'>
                                     
-                                    <p className='text-gray-300 font-bold'>{el.date}</p>
-                                    <div className='w-auto h-fit mt-4'>
+                                    <p className='text-text-color opacity-50 font-bold'>{el.date}</p>
+                                    <div className='w-auto h-fit mt-4 text-white'>
                                         <p>{el.comm}</p>
                                     </div>
                                     
@@ -194,28 +194,28 @@ function Thread() {
 
         
         
-        <div className={`${!open ? 'translate-y-96 transition-all overflow-y-hidden' : 'transition-all translate-y-0'} shadow-lg rounded-lg w-full h-full border-2 border-blue-500`}>
+        <div className={`${!open ? 'translate-y-[200%] transition-all overflow-y-hidden' : 'transition-all translate-y-0'} bg-primary-color shadow-lg rounded-lg w-full h-full border-2 border-blue-500`}>
             <form action="" onSubmit={(e) => handleSubmit(e)}>
                 {userMessage ? userMessage?.map((element) => {
                     if(element.id === id){
 
                         return (
 
-                            <div className='mx-3 flex place-content-start'><span><ReplyIcon/></span><q className='ml-5 bg-gray-200 leading-8 px-2 font-bold'>{element.message}</q></div>
+                            <div className='flex place-content-start'><span className='pl-5 flex flex-col place-content-center text-secondary-color'><ReplyIcon /></span><q className='ml-5 pl-5 bg-gray-300 leading-8 font-bold w-full'>{element.message}</q></div>
 
                         )
 
                     }
                 }) : null}
-                
-                <textarea onChange={(e) => setComments(id, e.target.value, user)} className='outline-none border border-blue-500 w-full h-1/2 p-2 md:w-1/2' name="" id="" cols="30" rows="10"></textarea>
-
+                <div className='w-full'>
+                    <textarea onChange={(e) => setComments(id, e.target.value, user)} className='outline-none bg-secondary-color w-full h-1/2 p-2 md:w-full text-text-color' placeholder='Reply to this comment..' name="" id="" cols="30" rows="10"></textarea>
+                </div>
                 <div className='flex place-content-end'>
-                    <button type='submit' className='bg-blue-600 px-5 py-2 text-white w-fit cursor-pointer'>Reply</button>
+                    <button type='submit' className='bg-button-color font-bold px-5 py-2 text-white w-fit cursor-pointer'>Reply</button>
                 </div>
             </form>
         </div>
-        <button onClick={() => localStorage.getItem('account') ? setOpen(!open) : setPopup(!openPopup)} className='bg-blue-600 px-5 py-2 text-white w-fit'>{open ? 'Close' : 'Reply'}</button> 
+        <button onClick={() => localStorage.getItem('account') ? setOpen(!open) : setPopup(!openPopup)} className='bg-button-color px-5 py-2 text-white font-bold w-fit'>{open ? 'Close' : 'Reply'}</button> 
     </div>
   )
 }
