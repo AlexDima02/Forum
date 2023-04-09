@@ -115,7 +115,7 @@ function Thread() {
 
                 return (
 
-                    <div className='w-full flex flex-col shadow-sm  rounded-md p-5 bg-primary-color text-white min-h-fit m-auto'>
+                    <div className='max-w-full mx-5 flex flex-col shadow-sm  rounded-md p-5 bg-primary-color text-white min-h-fit m-auto '>
 
                         <div className='flex'>
                             <div className='w-16 h-16 overflow-hidden'>
@@ -125,12 +125,16 @@ function Thread() {
                         
                         
                         </div>
-                        <div className='flex place-content-end mt-10'>
+                        <div className='flex place-content-between mt-10 text-sm md:text-base'>
                             
                             {/* Check if the user connected is the author of the post to be able to delete its own post */}
-                            {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
-                            <span className='mx-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-white'} id={element.id} onClick={(e) => localStorage.getItem('account') ? updateThreadFeedback(e.target.id, element) : setPopup(!openPopup)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
-                            <p className='text-text-color font-bold opacity-50'>Last edited on {element.date}</p>
+                            <div>
+                                {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
+                            </div>
+                            <div className='flex '> 
+                                <span className='mr-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-white'} id={element.id} onClick={(e) => localStorage.getItem('account') ? updateThreadFeedback(e.target.id, element) : setPopup(!openPopup)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
+                                <p className='text-text-color font-bold opacity-50'>Last edited on {element.date}</p>
+                            </div>
                             
                         </div>
                         
@@ -142,15 +146,16 @@ function Thread() {
             
         }) : null}
 
+        {/* Top comments */}
         {userComments ? userComments?.map((el) => {
 
             if(el.postID === id){
 
                 return (
-                    <div className='flex flex-col'>
+                    <div className='flex flex-col mx-5 text-sm md:text-base'>
                         <div className='flex h-1/5 my-10'>
                                 <div className='rounded-lg w-auto h-full bg-primary-color text-text-color mr-5'>
-                                    <div className='overflow-hidden object-cover w-28 h-28'>
+                                    <div className='overflow-hidden object-cover w-28 h-28 rounded-lg'>
                                     
                                         <img src={el.photo} alt="Nice image" className='w-full h-full'/>
                                     
@@ -158,7 +163,7 @@ function Thread() {
                                     
                                     
                                     
-                                    <p className='mt-2 text-center'>{el.name}</p>
+                                    <p className='mt-2 text-center text-white'>{el.name}</p>
 
                                     
                             

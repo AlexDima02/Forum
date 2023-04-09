@@ -9,7 +9,7 @@ function RepliesOptions(props) {
     
 
 
-    const handleWrite = (e) => {
+    const handleWrite = (e, respondToPost) => {
 
         writeReplies({
             
@@ -20,8 +20,9 @@ function RepliesOptions(props) {
                 date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
                 name: user.displayName,
                 id: uuidv4(),
-                postID: props.post
-        
+                postID: props.post,
+                photo: user.photoURL,
+                toUser: respondToPost
                
         })
 
@@ -29,6 +30,8 @@ function RepliesOptions(props) {
     }
 
     const handleSubmit = async () => {
+
+        
 
         try{
 
@@ -92,8 +95,8 @@ function RepliesOptions(props) {
                     </div>
                     <div>
                         <div className={replying ? `flex flex-col` : 'hidden'}>
-                            <textarea type="text" onChange={(e) => handleWrite(e.target.value)} className='text-text-color px-2 outline-none rounded-xl my-4 h-auto p-3'  placeholder='Reply to this person with..'/>
-                            <span onClick={() => handleSubmit()} className='cursor-pointer w-fit text-white'>Reply</span>
+                            <textarea type="text" onChange={(e) => handleWrite(e.target.value, e.target.id)} className='text-text-color px-2 outline-none rounded-xl my-4 h-auto p-3' id={props.replyName} placeholder='Reply to this person with..'/>
+                            <span id={props.replyName} onClick={() => handleSubmit()} className='cursor-pointer w-fit text-white'>Reply</span>
                         </div> 
                     </div>
                 </div>

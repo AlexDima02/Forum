@@ -13,6 +13,7 @@ import CompletePasswordReset from './components/completeResetPassword/CompletePa
 import { db } from './components/Database';
 import { collection, getDocs } from 'firebase/firestore';
 import { UserAuth } from './components/contexts/AuthContext';
+import NewPost from './pages/NewPost/NewPost';
 
 
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/profile" element={<Dashboard />} />
           <Route path="/forgot-password" element={<ResetPassword />} />
           <Route path="/reset-password" element={<CompletePasswordReset />} />
+          <Route path="/new" element={<NewPost />} />
         </Routes>
       </>
   )

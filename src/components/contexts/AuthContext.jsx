@@ -70,15 +70,17 @@ const AuthProvider = ({children}) => {
       uid: '',
       reply: '',
       date: '',
-      name: ''
+      name: '',
+      photo: '',
+      toUser: ''
 
 
     })
 
-    console.log(user);
-    console.log(userMessage);
-    console.log(userComments);
-    console.log(authenticated);
+    console.log(replies);
+    // console.log(userMessage);
+    // console.log(userComments);
+    // console.log(authenticated);
     // console.log(comments)
     
     // console.log(like)
@@ -188,7 +190,7 @@ const AuthProvider = ({children}) => {
         reply: input,
         date: new Date().toLocaleString('en-GB', { timeZone: 'UTC' }),
         name: user.displayName,
-
+        photo: user.photoURL
 
       });
 
