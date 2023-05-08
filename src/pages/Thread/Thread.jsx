@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { UserAuth } from '../../components/contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Markdown from 'markdown-to-jsx';
 import ReplyIcon from '@mui/icons-material/Reply';
 import DeleteForeverSharpIcon from '@mui/icons-material/DeleteForeverSharp';
 import ArrowCircleUpSharpIcon from '@mui/icons-material/ArrowCircleUpSharp';
@@ -102,7 +103,6 @@ function Thread() {
     
   return (
     <div className='max-w-7xl m-auto flex flex-col h-fit overflow-y-hidden overflow-x-hidden mt-10'>
-
         {/* Popup in case of anonymous user */}
         <div className={openPopup ? 'h-screen w-screen fixed top-0 left-0 right-0 bottom-0 flex flex-col place-content-center z-40' : 'hidden'}>
 
@@ -121,9 +121,60 @@ function Thread() {
                             <div className='w-16 h-16 overflow-hidden'>
                                 <img className='w-full h-full object-cover' src={element.photo} alt="" />
                             </div>
-                            <p className='self-center ml-10'>{element.message}</p>
-                        
-                        
+                            <div className='w-full px-5'>
+                                <div className='mb-10'>
+                                    <div className='font-bold text-3xl md:text-5xl'>
+                                        <h1>{element.title}</h1>
+                                    </div>
+                                    <div className='text-sm mt-2 md:text-lg'>
+                                        <p className='text-text-color font-bold opacity-50'>Last edited on {element.date}</p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        <div id='post-subject'>
+                            <Markdown options={{
+                                overrides: {
+                                    h1: {
+                                        props: {
+                                            className: 'heading font-bold text-3xl',
+                                        },
+                                    },
+                                    h2: {
+                                        props: {
+                                            className: 'heading font-bold text-2xl',
+                                        },
+                                    },
+                                    h3: {
+                                        props: {
+                                            className: 'heading font-bold text-xl',
+                                        },
+                                    },
+                                    h4: {
+                                        props: {
+                                            className: 'heading font-bold text-lg',
+                                        },
+                                    },
+                                    h5: {
+                                        props: {
+                                            className: 'heading font-bold text-md',
+                                        },
+                                    },
+                                    h6: {
+                                        props: {
+                                            className: 'heading font-bold text-sm',
+                                        },
+                                    },
+                                    p: {
+                                        props: {
+                                            className: 'py-5 text-md'
+                                        }
+
+                                    },
+                                }
+                            }}>{element.message}</Markdown>
                         </div>
                         <div className='flex place-content-between mt-10 text-sm md:text-base'>
                             
@@ -131,9 +182,8 @@ function Thread() {
                             <div>
                                 {element.uid === user.uid ? <span className='cursor-pointer' onClick={() => handleDelete()}>Delete</span> : null}
                             </div>
-                            <div className='flex '> 
+                            <div className='flex'> 
                                 <span className='mr-5 cursor-pointer'><FontAwesomeIcon className={element.likes.filter((el) => el.user === user.uid)[0] ? 'text-red-600' : 'text-white'} id={element.id} onClick={(e) => localStorage.getItem('account') ? updateThreadFeedback(e.target.id, element) : setPopup(!openPopup)} icon={faArrowUp}></FontAwesomeIcon>&nbsp;<span className='pl-2'>{element.likes ? element.likes.length : 0}</span></span>
-                                <p className='text-text-color font-bold opacity-50'>Last edited on {element.date}</p>
                             </div>
                             
                         </div>
@@ -206,7 +256,7 @@ function Thread() {
 
                         return (
 
-                            <div className='flex place-content-start'><span className='pl-5 flex flex-col place-content-center text-secondary-color'><ReplyIcon /></span><q className='ml-5 pl-5 bg-gray-300 leading-8 font-bold w-full'>{element.message}</q></div>
+                            <div className='flex place-content-start'><span className='pl-5 flex flex-col place-content-center text-secondary-color'><ReplyIcon /></span><q className='ml-5 pl-5 bg-gray-300 leading-8 font-bold w-full'>{element.title}</q></div>
 
                         )
 

@@ -27,7 +27,7 @@ function Home() {
     </div> : null} 
       <div className='w-full flex place-content-center '>
         <div>
-          <TypeBar />
+          {/* <TypeBar /> */}
           <PostsView />
           </div>
       </div>

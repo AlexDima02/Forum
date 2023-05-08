@@ -20,7 +20,7 @@ function PostsView() {
     
     
   return (
-    <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 min-h-screen bg-primary-color'>
+    <div className='w-full shadow-sm max-w-3xl rounded-md flex-col p-5 min-h-screen bg-primary-color mt-10'>
 
       {/* Popup in case of anonymous user */}
         <div className={openPopup ? 'h-screen w-screen fixed top-0 left-0 right-0 bottom-0 flex flex-col place-content-center z-40' : 'hidden'}>
@@ -67,7 +67,7 @@ function PostsView() {
                       <a href={`/thread/${element.id}`} key={element.id}>
                           <p className='opacity-30 text-text-color font-bold'>{element.date}</p>
                           <div className='w-auto h-fit mt-4'>
-                            <p>{element.message}</p>
+                            <h1 className='text-xl md:text-2xl'>{element.title}</h1>
                           </div>
                        </a>
 

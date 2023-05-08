@@ -41,10 +41,20 @@ const AuthProvider = ({children}) => {
         message: '',
         name: '',
         uid: '',
-        photo: ''
+        photo: '',
+        title: ''
 
     });
 
+    const [ post, setPost ] = useState({
+
+        id: '',
+        body: '',
+        title: ''
+    });
+
+    // console.log(post);
+    
     const [ comments, writeComments ] = useState({
 
       name: '',
@@ -57,13 +67,6 @@ const AuthProvider = ({children}) => {
 
     });
 
-
-    const [ userMessage, setUserMessage ] = useState();
-    const [ images, setListImages ] = useState([]);
-    const [ userComments, setUserComments ] = useState();
-    const [ commentReplies, setCommentReplies ] = useState();
-    const imageRef = ref(storage, 'images/');
-    const [ like, setLikes ] = useState(false);
     const [ replies, writeReplies ] = useState({
 
       commID: '',
@@ -77,12 +80,22 @@ const AuthProvider = ({children}) => {
 
     })
 
-    console.log(replies);
+
+    const [ userMessage, setUserMessage ] = useState();
+    const [ images, setListImages ] = useState([]);
+    const [ userComments, setUserComments ] = useState();
+    const [ commentReplies, setCommentReplies ] = useState();
+    const imageRef = ref(storage, 'images/');
+    const [ like, setLikes ] = useState(false);
+    const [ userPosts, setUserPosts ] = useState();
+
+    
+    // console.log(userPosts);
+    // console.log(replies);
     // console.log(userMessage);
     // console.log(userComments);
     // console.log(authenticated);
     // console.log(comments)
-    
     // console.log(like)
     
     const createUser = (email,password) => {
@@ -150,7 +163,20 @@ const AuthProvider = ({children}) => {
 
     }
 
-    function setMessage(e, user, numberOfComments){
+    function setPosts(input, title){
+
+      setPost({
+
+        id: uuidv4(),
+        body: input,
+        title: title
+
+      })
+
+
+    }
+
+    function setMessage(e, title, user){
       
       setChat({
         id: uuidv4(),
@@ -159,7 +185,8 @@ const AuthProvider = ({children}) => {
         name: user.displayName,
         uid: user.uid,
         photo: user.photoURL,
-        likes: []
+        likes: [],
+        title: title
       });
 
     }
@@ -243,6 +270,31 @@ const AuthProvider = ({children}) => {
      
     }
 
+    async function getPosts(){
+
+      const posts = await getDocs(query(collection(db, 'posts')));
+      const filtred = posts.docs.map((doc) => {
+ 
+         return doc.data();
+ 
+      });  
+
+      setUserPosts(filtred);
+
+
+    }
+    console.log(post);
+    async function pushPosts(){
+
+      
+      if(post.body !== ''){
+
+        return setDoc(doc(db, "posts", post.id), post);
+
+      }
+
+    }
+
 
     function deletePosts(id){
 
@@ -305,7 +357,7 @@ const AuthProvider = ({children}) => {
 
         const comments = await getDocs(query(collection(db, 'comments'), orderBy("date", 'asc')));
         const filtred = comments.docs.map((doc) => {
-          console.log(doc)
+          // console.log(doc)
           return doc.data();
  
         });
@@ -472,6 +524,7 @@ const AuthProvider = ({children}) => {
 
         }
         getMessages();
+        getPosts();
         getImages();
         getComments();
         getCommReplies();
@@ -491,7 +544,7 @@ const AuthProvider = ({children}) => {
       // }, [])
 
   return (
-    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies, writeReplies, pushCommReplies, getCommReplies, commentReplies, deleteReplies, deleteReplyComments, anonymSignIn }}>
+    <UserContext.Provider value={{ createUser, user, signout, login, resetPassword, completePasswordReset, settingUsername, changeEmail, changePassword, deleteAccount, setMessage, pushMessages, userMessage, getMessages, uploadImages, images, pushComments, setComments, userComments, getComments, deletePosts, deleteComments, editComments, updateStateLikes, deleteLikeUser, updateThreadFeedback, like, replyComments, setReplies, writeReplies, pushCommReplies, getCommReplies, commentReplies, deleteReplies, deleteReplyComments, anonymSignIn, userPosts, setPosts, pushPosts, getPosts, images, getDownloadURL }}>
       {!authenticated && children}
     </UserContext.Provider>
   )

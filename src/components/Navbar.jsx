@@ -38,14 +38,16 @@ function Navbar() {
       <>
       
             <li className='pr-5'><a href="/">Home</a></li>
+            <li className='pr-5 hidden md:block'><a href="/new">Create a post</a></li>
             <div className='relative z-10'>
                 <div onClick={toggleDropdown} className='flex cursor-pointer'>
                   <h1>{user.displayName}</h1>
                   <span className={`ml-3 ${show ? 'rotate-0 transition-transform' : 'rotate-180 transition-transform'}`}><KeyboardArrowDownIcon /></span>
                 </div>
-                <div className={`${show ? 'opacity-1 absolute flex-col flex p-2 h-28 place-content-between translate-y-0 shadow-md transition duration-500' : 'transition duration-500 opacity-0 absolute flex-col flex p-2 h-20 place-content-between -translate-y-72'} bg-secondary-color -z-10 w-full`}>
+                <div className={`${show ? 'opacity-1 flex-col flex p-2 h-fit place-content-between translate-y-0 shadow-md transition duration-500' : 'transition duration-500 opacity-0 absolute flex-col flex p-2 h-fit place-content-between -translate-y-72 w-0'} absolute -left-[100%] w-[150px] bg-secondary-color -z-10`}>
                   <span className='border-gray-300 border-b pb-3'><a href="/profile">Profile</a></span>
-                  <span className='pb-3'><a onClick={handleLogout} href="">Logout</a></span>
+                  <span className='pr-5 border-gray-300 border-b pb-3 pt-3 md:hidden'><a href="/new">Create a post</a></span>
+                  <span className='pt-3'><a onClick={handleLogout} href="">Logout</a></span>
                 </div>
             </div>
       </>

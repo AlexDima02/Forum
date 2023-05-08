@@ -12,3 +12,26 @@ body{
     background-color: black;
 
 }
+
+
+.w-md-editor-content {
+  font-size: 23px !important;
+  line-height: 124px !important;
+  background-color: #1D2226;
+}
+
+.wmde-markdown, .wmde-markdown-color{
+
+    background-color: #1D2226;
+
+} 
+
+@media only screen and (max-width: 600px) {
+
+    .w-md-editor-show-live{
+
+        min-height: 100vh;
+    
+    }
+    
+}
