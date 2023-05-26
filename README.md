@@ -14,7 +14,7 @@ This is a forum about any topic and can be an accesible to anyone who has an acc
  - Dashboard for the users with change of the password, username and
    photo
  - Live update of the user photo across the forum
- - Markdown editor to create your new post and preview the result before submiting it
+ - Markdown editor to create your new post and preview the result before submitting it
 
 ## Technologies used:
 
